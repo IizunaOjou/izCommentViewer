@@ -1,0 +1,500 @@
+# IzCommentViewer
+
+[日本語はこちら](#日本語)
+
+IzCommentViewer is a Windows desktop tool for viewing YouTube Live and Twitch comments, reading comments aloud through VOICEVOX, saving per-user comment logs, and displaying comments in OBS Browser Sources.
+
+> Beta / test version. YouTube and Twitch may change their chat systems, so comment acquisition may stop working in future versions.
+
+## Features
+
+- YouTube Live comment acquisition
+- Twitch comment acquisition without login
+- VOICEVOX text-to-speech integration
+- YouTube and Twitch comments shown in separate tabs
+- Unified comment viewer tab
+- Separate OBS Browser Source URLs for YouTube and Twitch
+- Browser Source font settings
+- Browser Source user name display toggle
+- Browser Source icon display toggle and icon size setting
+- YouTube custom emoji support in Browser Source
+- Twitch official emote support in Browser Source
+- Twitch avatar proxy route for Browser Source
+- Per-user comment log saving
+- Fast mode for high-traffic streams
+- Settings persistence
+
+## OBS Browser Source
+
+IzCommentViewer provides local Browser Source URLs for OBS.
+
+Default port:
+
+```text
+51766
+```
+
+YouTube comment Browser Source:
+
+```text
+http://127.0.0.1:51766/overlay/youtube
+```
+
+Twitch comment Browser Source:
+
+```text
+http://127.0.0.1:51766/overlay/twitch
+```
+
+Use the buttons in the app to copy the current URLs:
+
+```text
+YoutubeコメントURL
+TwitchコメントURL
+```
+
+If the default port is already in use, the app can automatically select another available port.
+
+## Twitch Avatar Display
+
+Twitch IRC does not provide avatar URLs directly.
+
+IzCommentViewer resolves Twitch avatars through the local Browser Source server route:
+
+```text
+/avatar/twitch/{userName}
+```
+
+Example:
+
+```text
+http://127.0.0.1:51766/avatar/twitch/example_user
+```
+
+If the avatar cannot be resolved, the Browser Source may show a fallback or no icon.
+
+## VOICEVOX
+
+To use VOICEVOX reading, start VOICEVOX first and keep the VOICEVOX engine running.
+
+Default VOICEVOX engine URL:
+
+```text
+http://127.0.0.1:50021
+```
+
+IzCommentViewer includes a button to reset the VOICEVOX URL to the default value.
+
+VOICEVOX itself is not bundled with IzCommentViewer.
+
+## Settings and User Data
+
+All user data is stored under:
+
+```text
+%LOCALAPPDATA%\IzCommentViewer\
+```
+
+Settings file:
+
+```text
+%LOCALAPPDATA%\IzCommentViewer\settings.json
+```
+
+Comment logs:
+
+```text
+%LOCALAPPDATA%\IzCommentViewer\Logs\
+```
+
+WebView2 user data:
+
+```text
+%LOCALAPPDATA%\IzCommentViewer\WebView2\
+```
+
+The app button `設定/ログ 保存フォルダを開く` opens the user data root folder:
+
+```text
+%LOCALAPPDATA%\IzCommentViewer\
+```
+
+## Restored Settings
+
+The following settings are restored on the next launch:
+
+- VOICEVOX URL
+- Speaker ID
+- VOICEVOX read-aloud ON/OFF
+- Read user name ON/OFF
+- Duplicate comment filtering
+- Browser Source name display ON/OFF
+- Browser Source icon display ON/OFF
+- Icon size
+- Browser Source font size
+- Browser Source font family
+- Comment log saving ON/OFF
+- Fast mode ON/OFF
+- Browser Source enabled ON/OFF
+- Browser Source port
+- Automatic available port selection ON/OFF
+
+The following are intentionally not restored:
+
+- YouTube stream URL
+- Twitch stream URL / Twitch channel name
+- Currently displayed comments
+
+## Comment Logs
+
+When comment log saving is enabled, IzCommentViewer saves daily logs and per-user logs.
+
+Stored data may include:
+
+- Platform
+- User name
+- Normalized user key
+- Comment text
+- Message HTML
+- Avatar URL
+- Timestamp
+
+Please handle saved logs carefully because they may include user names and comment contents.
+
+## Requirements
+
+- Windows 10 / 11
+- .NET 8 Desktop Runtime x64
+- Microsoft Edge WebView2 Runtime
+- VOICEVOX, if using read-aloud features
+
+If the app does not start, please install .NET 8 Desktop Runtime x64.
+
+Download .NET 8 Desktop Runtime x64 from the official Microsoft .NET download page:
+
+```text
+https://dotnet.microsoft.com/en-us/download/dotnet/8.0
+```
+
+On the download page, choose **.NET Desktop Runtime 8.0** for **Windows x64**.
+
+## Build
+
+Required NuGet package:
+
+```bash
+dotnet add package Microsoft.Web.WebView2
+```
+
+Recommended `.csproj`:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.*" />
+  </ItemGroup>
+</Project>
+```
+
+Publish command:
+
+```bash
+dotnet publish -c Release -r win-x64 --self-contained false
+```
+
+The output folder is usually:
+
+```text
+bin\Release\net8.0-windows\win-x64\publish
+```
+
+Recommended release zip name:
+
+```text
+IzCommentViewer-v0.1.0-beta.1-win64.zip
+```
+
+Recommended zip contents:
+
+```text
+IzCommentViewer-v0.1.0-beta.1-win64
+├─ IzCommentViewer.exe
+├─ IzCommentViewer.dll
+├─ IzCommentViewer.deps.json
+├─ IzCommentViewer.runtimeconfig.json
+├─ README.md
+└─ LICENSE
+```
+
+Additional DLL files generated by `dotnet publish` should also be included.
+
+## Notes
+
+IzCommentViewer is not affiliated with YouTube, Google, Twitch, Amazon, VOICEVOX, or OBS.
+
+YouTube comments are acquired internally using WebView2. Twitch comments are acquired through anonymous IRC access. OBS Browser Source overlays are served locally from `127.0.0.1`.
+
+Do not use this tool in a way that violates the terms, guidelines, or policies of any platform.
+
+## License
+
+IzCommentViewer is licensed under the GNU General Public License v3.0. See [LICENSE](LICENSE).
+
+---
+
+# 日本語
+
+[English](#izcommentviewer)
+
+IzCommentViewer は、YouTube Live と Twitch のコメントを取得・表示し、VOICEVOXで読み上げたり、ユーザー別コメントログを保存したり、OBSブラウザソース用のコメント表示を出力したりできる Windows 向けデスクトップツールです。
+
+> ベータ版 / テスト版です。YouTube や Twitch 側の仕様変更により、将来的にコメント取得が動作しなくなる可能性があります。
+
+## 主な機能
+
+- YouTube Live コメント取得
+- Twitch コメント取得（ログイン不要）
+- VOICEVOX 読み上げ連携
+- YouTube / Twitch のコメントを別タブで表示
+- 統合コメントビュー
+- YouTube用 / Twitch用の OBSブラウザソースURLを分離
+- ブラウザソース用フォント設定
+- ブラウザソースでの名前表示 ON/OFF
+- ブラウザソースでのアイコン表示 ON/OFF
+- アイコンサイズ調整
+- YouTubeカスタム絵文字のブラウザソース表示
+- Twitch公式エモートのブラウザソース表示
+- Twitchアイコン画像のローカル代理取得
+- ユーザー別コメントログ保存
+- コメント流速が速い配信用の高速モード
+- 設定保存・復元
+
+## OBSブラウザソース
+
+IzCommentViewer は、OBSブラウザソースで使えるローカルURLを提供します。
+
+デフォルトポート:
+
+```text
+51766
+```
+
+YouTubeコメント用ブラウザソース:
+
+```text
+http://127.0.0.1:51766/overlay/youtube
+```
+
+Twitchコメント用ブラウザソース:
+
+```text
+http://127.0.0.1:51766/overlay/twitch
+```
+
+アプリ内の以下のボタンから、現在有効なURLをクリップボードにコピーできます。
+
+```text
+YoutubeコメントURL
+TwitchコメントURL
+```
+
+デフォルトポートが他のソフトと被っている場合は、自動で空きポートを選択できます。
+
+## Twitchアイコン表示
+
+Twitchの匿名IRCコメントには、アイコン画像URLが直接含まれません。
+
+そのため IzCommentViewer では、ブラウザソース用ローカルサーバーの以下のルートでTwitchアイコンを解決します。
+
+```text
+/avatar/twitch/{userName}
+```
+
+例:
+
+```text
+http://127.0.0.1:51766/avatar/twitch/example_user
+```
+
+アイコン画像の取得に失敗した場合は、アイコンが表示されない、またはフォールバック表示になる場合があります。
+
+## VOICEVOX
+
+VOICEVOX読み上げを使う場合は、先に VOICEVOX を起動し、VOICEVOX Engine が動作している状態にしてください。
+
+デフォルトの VOICEVOX Engine URL:
+
+```text
+http://127.0.0.1:50021
+```
+
+IzCommentViewer には、VOICEVOX URLをデフォルト値へ戻すボタンがあります。
+
+VOICEVOX本体は IzCommentViewer に同梱していません。
+
+## 設定とユーザーデータ
+
+ユーザーデータは以下に保存されます。
+
+```text
+%LOCALAPPDATA%\IzCommentViewer\
+```
+
+設定ファイル:
+
+```text
+%LOCALAPPDATA%\IzCommentViewer\settings.json
+```
+
+コメントログ:
+
+```text
+%LOCALAPPDATA%\IzCommentViewer\Logs\
+```
+
+WebView2ユーザーデータ:
+
+```text
+%LOCALAPPDATA%\IzCommentViewer\WebView2\
+```
+
+アプリ内の `設定/ログ 保存フォルダを開く` ボタンを押すと、以下のユーザーデータルートをエクスプローラーで開きます。
+
+```text
+%LOCALAPPDATA%\IzCommentViewer\
+```
+
+## 次回起動時に復元される設定
+
+以下の設定は次回起動時に復元されます。
+
+- VOICEVOX URL
+- 話者ID
+- VOICEVOX読み上げ ON/OFF
+- 名前も読む ON/OFF
+- 重複コメント無視
+- ブラウザソースで名前を表示 ON/OFF
+- ブラウザソースでアイコン表示 ON/OFF
+- アイコンサイズ
+- ブラウザソースのフォントサイズ
+- ブラウザソースのフォント名
+- コメントログ保存 ON/OFF
+- 高速モード ON/OFF
+- ブラウザソース有効化 ON/OFF
+- ブラウザソースのポート番号
+- 空きポート自動 ON/OFF
+
+以下は意図的に復元しません。
+
+- YouTube配信URL
+- Twitch配信URL / Twitchチャンネル名
+- 現在表示中のコメント
+
+## コメントログ
+
+コメントログ保存がONの場合、日別ログとユーザー別ログが保存されます。
+
+ログには以下のような情報が含まれる場合があります。
+
+- プラットフォーム
+- ユーザー名
+- 正規化ユーザーキー
+- コメント本文
+- メッセージHTML
+- アイコンURL
+- 投稿日時
+
+コメントログにはユーザー名やコメント本文が含まれるため、取り扱いには注意してください。
+
+## 必要環境
+
+- Windows 10 / 11
+- .NET 8 Desktop Runtime x64
+- Microsoft Edge WebView2 Runtime
+- VOICEVOX（読み上げ機能を使う場合）
+
+起動しない場合は .NET 8 Desktop Runtime x64 をインストールしてください。
+
+.NET 8 Desktop Runtime x64 は、Microsoft公式の .NET ダウンロードページから入手できます。
+
+```text
+https://dotnet.microsoft.com/ja-jp/download/dotnet/8.0
+```
+
+ダウンロードページでは、**.NET Desktop Runtime 8.0** の **Windows x64** を選んでください。
+
+## ビルド方法
+
+必要な NuGet パッケージ:
+
+```bash
+dotnet add package Microsoft.Web.WebView2
+```
+
+推奨 `.csproj`:
+
+```xml
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Web.WebView2" Version="1.*" />
+  </ItemGroup>
+</Project>
+```
+
+publish コマンド:
+
+```bash
+dotnet publish -c Release -r win-x64 --self-contained false
+```
+
+出力先は通常以下です。
+
+```text
+bin\Release\net8.0-windows\win-x64\publish
+```
+
+推奨リリースzip名:
+
+```text
+IzCommentViewer-v0.1.0-beta.1-win64.zip
+```
+
+推奨zip内容:
+
+```text
+IzCommentViewer-v0.1.0-beta.1-win64
+├─ IzCommentViewer.exe
+├─ IzCommentViewer.dll
+├─ IzCommentViewer.deps.json
+├─ IzCommentViewer.runtimeconfig.json
+├─ README.md
+└─ LICENSE
+```
+
+`dotnet publish` で生成された追加DLLも含めてください。
+
+## 注意事項
+
+IzCommentViewer は YouTube、Google、Twitch、Amazon、VOICEVOX、OBS の公式ツールではありません。
+
+YouTubeコメント取得には内部的に WebView2 を使用します。Twitchコメント取得には匿名IRC接続を使用します。OBSブラウザソース表示は `127.0.0.1` のローカルURLで提供されます。
+
+各プラットフォームの規約・ガイドライン・ポリシーに反する使い方はしないでください。
+
+## ライセンス
+
+IzCommentViewer は GNU General Public License v3.0 のもとで公開されています。詳細は [LICENSE](LICENSE) を確認してください。
